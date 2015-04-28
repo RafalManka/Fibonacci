@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Fibonacci</string>
+
+    <string name="run_fibonacci">Run Fibonacci!</string>
+    <string name="action_settings">Settings</string>
+</resources>
