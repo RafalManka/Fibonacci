@@ -16,6 +16,8 @@ public class FibonacciActivity extends ActionBarActivity implements View.OnClick
     private TextView txtOutput;
     private TextView txtErrorOutput;
 
+    private static boolean mIsRunning;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +56,13 @@ public class FibonacciActivity extends ActionBarActivity implements View.OnClick
 
         @Override
         protected Integer doInBackground(Integer... times) {
-
+            mIsRunning = true;
             try {
                 for (int i = 1; i <= times[0]; i++) {
-                    publishProgress(fibonacciLoop(new BigInteger(String.valueOf(i))));
+                    BigInteger out = fibonacciLoop(new BigInteger(String.valueOf(i)));
+                    if ((i % 2) == 0) {
+                        publishProgress(out);
+                    }
                 }
             } catch (Exception e) {
                 this.exception = e;
@@ -73,6 +78,13 @@ public class FibonacciActivity extends ActionBarActivity implements View.OnClick
             if (exception != null) {
                 txtErrorOutput.setText(exception.getMessage());
             }
+            mIsRunning = false;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            mIsRunning = false;
         }
     }
 
@@ -80,6 +92,10 @@ public class FibonacciActivity extends ActionBarActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnRunFibonacci:
+                if (mIsRunning) {
+                    return;
+                }
+                txtOutput.setText("");
                 new MyAsyncTask().execute(TIMES);
                 break;
         }
